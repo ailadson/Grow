@@ -47,7 +47,9 @@
 	var Grow = __webpack_require__(1);
 
 	window.addEventListener("DOMContentLoaded", function(){
-	  new Grow({});
+	  var root = document.getElementById('grow');
+
+	  new Grow(root.width, root.height, {});
 	});
 
 
@@ -62,9 +64,9 @@
 	var SeedStage = __webpack_require__(4);
 
 	class Grow {
-	  constructor(config){
+	  constructor(width, height, config){
 	    this.currentStage = config.currentStage || null;
-	    this.game = new Phaser.Game(600, 800, Phaser.AUTO, 'grow');
+	    this.game = new Phaser.Game(width, height, Phaser.AUTO, 'grow');
 	    // this.player = new Tree(this, config.player);
 
 	    this.stages = {

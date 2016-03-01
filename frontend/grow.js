@@ -5,9 +5,9 @@ var PreloadStage = require("./states/preload");
 var SeedStage = require("./states/seed");
 
 class Grow {
-  constructor(config){
+  constructor(width, height, config){
     this.currentStage = config.currentStage || null;
-    this.game = new Phaser.Game(600, 800, Phaser.AUTO, 'grow');
+    this.game = new Phaser.Game(width, height, Phaser.AUTO, 'grow');
     // this.player = new Tree(this, config.player);
 
     this.stages = {
