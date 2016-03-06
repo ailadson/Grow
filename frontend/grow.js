@@ -3,12 +3,15 @@
 var BootStage = require("./states/boot");
 var PreloadStage = require("./states/preload");
 var SeedStage = require("./states/seed");
+var ProtoEnv = require("./env/proto_env.js");
+var Tree = require("./entities/player.js");
 
 class Grow {
   constructor(width, height, config){
     this.currentStage = config.currentStage || null;
     this.game = new Phaser.Game(width, height, Phaser.AUTO, 'grow');
-    // this.player = new Tree(this, config.player);
+    this.env = new ProtoEnv(this, config.env);
+    this.player = new Tree(this, config.player);
 
     this.stages = {
       'boot' : new BootStage(this, config.boot),
@@ -20,12 +23,12 @@ class Grow {
       // 'sapling' : new PreloadStage(game, player, config.sapling),
     };
 
-    this.loadStages();
+    this._loadStages();
 
     this.game.state.start('boot');
   }
 
-  loadStages(){
+  _loadStages(){
     for(var stage in this.stages){
       this.game.state.add(stage, this.stages[stage].getState());
     }

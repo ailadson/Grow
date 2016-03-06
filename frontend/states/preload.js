@@ -4,6 +4,7 @@ class PreloadStage {
   constructor(engine, config){
     this.engine = engine;
     this.game = engine.game;
+    this.env = engine.env;
     this.player = engine.player;
     this._loadConfig(config);
   }
@@ -16,7 +17,8 @@ class PreloadStage {
   }
 
   preload(){
-
+    this.env.preload();
+    this.player.preload();
   }
 
   create(){
