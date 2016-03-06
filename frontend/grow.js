@@ -25,6 +25,9 @@ class Grow {
 
     this._loadStages();
 
+    this.gameStarted = config.gameStarted || false;
+    this.tutorial = false;
+
     this.game.state.start('boot');
   }
 

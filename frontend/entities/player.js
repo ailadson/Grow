@@ -32,6 +32,12 @@ class Player extends Entity {
     this.updates[key](...[].slice.call(arguments, 1));
   }
 
+  start () {
+    var tween = this.game.add.tween(this.seed.scale);
+    tween.to({ x : 0.5, y : 0.5 }, 2000);
+    tween.start();
+  }
+
 
   // seed methods
   _createSeed (pos) {
