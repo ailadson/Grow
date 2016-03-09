@@ -7,6 +7,61 @@ class Hub {
     this.engine = engine;
     this.game = engine.game;
     this.player = engine.player;
+
+    this.creates = {
+      seed : this.createSeedUpgrade.bind(this)
+    }
+
+    this.showingUpgrades = false;
+
+  }
+
+  preload () {
+    this.game.load.image('badge', 'assets/proto_upgrade_badge.png');
+    this.game.load.image('upgradeBackground', 'assets/proto_upgrade_background.png');
+  }
+
+  create (key) {
+    this.creates[key]();
+  }
+
+  createSeedUpgrade () {
+    this.upgradeBackground = this.game.add.image(0, 0, 'upgradeBackground');
+    this.upgradeBackground.scale.setTo(25, 27);
+    this.upgradeBackground.alpha = 0.9;
+    this.badge = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'badge');
+    this.badge.anchor.setTo(0.5);
+
+    this.upgradeBackground.bringToTop();
+    this.badge.bringToTop();
+
+    this.linkUpgradeToBadge(this.badge, 'Juicy Cotyledons');
+
+    this.upgradeBackground.kill();
+    this.badge.kill();
+  }
+
+  toggleUpgradeTree() {
+    if(this.showingUpgrades){
+      this.showingUpgrades = false;
+      this.upgradeBackground.kill();
+      this.badge.kill();
+    } else {
+      this.showingUpgrades = true;
+      this.upgradeBackground.revive();
+      this.badge.revive();
+    }
+  }
+
+  linkUpgradeToBadge(badge, upgradeKey) {
+    badge.inputEnabled = true;
+    badge.input.useHandCursor = true;
+
+    var upgrade = this.engine.player.upgrade.get(upgradeKey);
+
+    badge.events.onInputDown.add(function(){
+      upgrade.activate();
+    });
   }
 
   updateStartText () {

@@ -31,6 +31,7 @@ class SeedStage {
 
     this.env.create('seed');
     this.player.create('seed', { x: this.game.world.centerX, y: this.game.world.centerY + 100 });
+    this.hub.create('seed');
 
     this.hub.createStartText();
   }

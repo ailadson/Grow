@@ -45,7 +45,7 @@ class Player extends Entity {
   }
 
   addCost (cost) {
-    
+
   }
 
 
@@ -60,6 +60,10 @@ class Player extends Entity {
 
     this.isSeedGrowing = false;
     this.remainingSeedGrowth = 0;
+
+    this.seed.events.onInputDown.add(function(){
+      this.engine.hub.toggleUpgradeTree();
+    }, this);
 
     this.startWindTween(Math.random() - 0.5);
   }
