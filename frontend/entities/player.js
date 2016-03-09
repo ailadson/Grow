@@ -1,10 +1,14 @@
 "use strict";
 var Util = require("../util.js");
 var Entity = require("./entity.js");
+var UpgradeManager = require("./upgrade_manager.js");
 
 class Player extends Entity {
   constructor(engine, config){
     super(engine, config);
+
+    this.upgrade = new UpgradeManager(this, config.upgrades);
+    this.stage = config.stage || 'seed';
 
     this.creates = {
       seed : this._createSeed.bind(this)
@@ -13,6 +17,8 @@ class Player extends Entity {
     this.updates = {
       seed : this._updateSeed.bind(this)
     }
+
+    this.age = 0;
   }
 
   preload () {
@@ -38,20 +44,28 @@ class Player extends Entity {
     tween.start();
   }
 
+  addCost (cost) {
+    
+  }
+
 
   // seed methods
   _createSeed (pos) {
     this.seed = this.game.add.sprite(pos.x, pos.y, 'seed');
     this.seed.smoothed = false;
-
-    this.seedSize = 0.1;
+    this.seed.inputEnabled = true;
+    this.seed.input.useHandCursor = true;
+    this.seedSize = 0;
     this.seed.rotation = 4;
+
+    this.isSeedGrowing = false;
+    this.remainingSeedGrowth = 0;
 
     this.startWindTween(Math.random() - 0.5);
   }
 
   _updateSeed () {
-  //   this.rotateSeed((Math.random() - 0.5)/5);
+    this.growSeed();
   }
 
   // set seedRotation (amount) {
@@ -60,6 +74,10 @@ class Player extends Entity {
 
   set seedSize (size) {
     this.seed.scale.setTo(size);
+  }
+
+  get seedSize () {
+    return this.seed.scale.x;
   }
 
   startWindTween (amount) {
@@ -71,6 +89,7 @@ class Player extends Entity {
       var tween = this.game.add.tween(this.seed);
       tween.to({ rotation : nextRot}, windSpeed);
       tween.onComplete.add(this.startWindTween.bind(this, (Math.random() - 0.5)/windForce), this);
+      this.activeTweens.push(tween);
       tween.start()
     } else {
       this.startWindTween((Math.random() - 0.5)/windForce);
@@ -79,9 +98,20 @@ class Player extends Entity {
 
   startGrowthTween (amount) {
     var tween = this.game.add.tween(this.seed.scale);
-    tween.to({ x : this.seed.scale.x + amount, y : this.seed.scale.y + amount }, 10000);
-    // tween.onComplete.add(this.startWindTween.bind(this, (Math.random() - 0.5)/windForce), this);
-    tween.start()
+    tween.to({ x : this.seed.scale.x + amount, y : this.seed.scale.y + amount }, 1200000);
+    tween.onComplete.add(function(){
+      this.isSeedGrowing = false;
+    }, this);
+    this.isSeedGrowing = true;
+    this.activeTweens.push(tween);
+    tween.start();
+  }
+
+  growSeed () {
+    if(!this.isSeedGrowing && this.remainingSeedGrowth > 0){
+      this.remainingSeedGrowth--;
+      this.startGrowthTween(0.5);
+    }
   }
 
 

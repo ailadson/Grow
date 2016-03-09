@@ -17,6 +17,10 @@ Util = {
     var _dy = displayObject.y - pointer.y;
 
     return Math.sqrt(_dx * _dx + _dy * _dy);
+  },
+
+  inDays (days){
+    return 432000 * days;
   }
 }
 

@@ -1,10 +1,12 @@
 "use strict";
 
+var Util = require("../util");
+
 class ProtoEnv {
   constructor(engine, config){
     this.game = engine.game;
-    this.sky = config.sky;
-    this.ground = config.ground || null;
+    this._loadConfig(config);
+
 
     this.beaufortScale = 3;
 
@@ -15,6 +17,7 @@ class ProtoEnv {
 
   preload(){
     this.game.load.image('sky', this.sky);
+    this.game.load.image('night', this.night);
     this.game.load.image('ground', this.ground);
   }
 
@@ -22,6 +25,31 @@ class ProtoEnv {
     this.creates[key]();
   }
 
+  speedUpTweens (amount) {
+    if(this.dayFade){
+      this.dayFade.timeScale = amount;
+    }
+
+    if(this.dayFade){
+      this.nightFade.timeScale = amount;
+    }
+  }
+
+  slowDownTweens () {
+    if(this.dayFade){
+      this.dayFade.timeScale = 1;
+    }
+
+    if(this.dayFade){
+      this.nightFade.timeScale = 1;
+    }
+  }
+
+  _loadConfig (config) {
+    this.sky = config.sky;
+    this.night = config.night;
+    this.ground = config.ground;
+  }
 
   //*******seed private
   _createSeed (cb) {
@@ -30,8 +58,42 @@ class ProtoEnv {
   }
 
   _createSeedBackground () {
+    this.night = this.game.add.sprite(0, 0, 'night');
+    this.night.scale.setTo(25,22);
+
     this.sky = this.game.add.sprite(0, 0, 'sky');
     this.sky.scale.setTo(25,22);
+
+    this._createDayFadeTween();
+    this._createNightFadeTween();
+
+    this.dayFade.start();
+  }
+
+  _createDayFadeTween () {
+    var tween = this.game.add.tween(this.sky);
+    tween.to({ alpha : 0 }, Util.inDays(1));
+    tween.onComplete.add(function(){
+      this.sky.sendToBack();
+      this.sky.alpha = 1;
+      this.nightFade.delay(1000);
+      this.nightFade.start();
+    }, this);
+
+    this.dayFade = tween;
+  }
+
+  _createNightFadeTween () {
+    var tween = this.game.add.tween(this.night);
+    tween.to({ alpha : 0 }, Util.inDays(1));
+    tween.onComplete.add(function(){
+      this.night.sendToBack();
+      this.night.alpha = 1;
+      this.dayFade.delay(1000);
+      this.dayFade.start();
+    }, this);
+
+    this.nightFade = tween;
   }
 
   _createSeedGround(){

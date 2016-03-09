@@ -22,9 +22,12 @@ class SeedStage {
 
   preload () {
     this.game.stage.smoothed = false;
+    this.game.load.audio('background', this.backgroundMusicURL);
   }
 
   create () {
+    this.backgroundMusic = this.game.add.audio('background', 0.5, true);
+    this.backgroundMusic.play();
 
     this.env.create('seed');
     this.player.create('seed', { x: this.game.world.centerX, y: this.game.world.centerY + 100 });
@@ -38,6 +41,7 @@ class SeedStage {
   }
 
   _loadConfig(config){
+    this.backgroundMusicURL = config.backgroundMusicURL;
   }
 }
 

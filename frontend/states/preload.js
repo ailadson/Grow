@@ -22,6 +22,18 @@ class PreloadStage {
   }
 
   create(){
+    this.game.input.keyboard.onDownCallback = function(e){
+      if(e.code === "Space"){
+        this.engine.speedUpGame();
+      }
+    }.bind(this);
+
+    this.game.input.keyboard.onUpCallback = function(e){
+      if(e.code === "Space"){
+        this.engine.slowDownGame();
+      }
+    }.bind(this);
+
     this.game.state.start('seed');
   }
 

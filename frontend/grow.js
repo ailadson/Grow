@@ -16,9 +16,9 @@ class Grow {
     this.hub = new Hub(this);
 
     this.stages = {
-      'boot' : new BootStage(this, config.boot),
-      'preload' : new PreloadStage(this, config.preload),
-      'seed' : new SeedStage(this, config.seed)
+      'boot' : new BootStage(this, config.stage.boot),
+      'preload' : new PreloadStage(this, config.stage.preload),
+      'seed' : new SeedStage(this, config.stage.seed)
       // ,
       // 'falling' : new PreloadStage(game, player, config.falling),
       // 'root' : new PreloadStage(game, player, config.root),
@@ -30,7 +30,19 @@ class Grow {
     this.gameStarted = config.gameStarted || false;
     this.tutorial = false;
 
+    this.isSpedUp = false;
+
     this.game.state.start('boot');
+  }
+
+  speedUpGame () {
+    this.player.speedUpTweens(100);
+    this.env.speedUpTweens(100);
+  }
+
+  slowDownGame () {
+    this.player.slowDownTweens();
+    this.env.slowDownTweens();
   }
 
   _loadStages(){
